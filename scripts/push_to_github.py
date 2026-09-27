@@ -15,7 +15,7 @@ def main():
 
     token = os.environ.get("GITHUB_TOKEN")
     if len(sys.argv) > 1:
-        token = sys.argv[1].strip()
+        token = sys.argv[1].strip().strip("<>")
 
     remote_url = "https://github.com/MHuzaifaIftikhar/ReForge-AI-Software-Recovery-Evolution-Engine.git"
 
