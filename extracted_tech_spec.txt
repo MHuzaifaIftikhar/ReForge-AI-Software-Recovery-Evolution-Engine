@@ -1,0 +1,500 @@
+ReForge — Technical Architecture, UX & Demo Specification
+1. Recommended Technology Stack
+Frontend
+React
+TypeScript
+Vite
+Tailwind CSS
+shadcn/ui
+React Flow for knowledge/impact graphs
+Monaco Editor for code viewing
+Lucide icons
+Recharts for analytics where useful
+Backend
+Python
+FastAPI
+Pydantic
+Uvicorn
+Analysis
+Use deterministic tooling wherever possible.
+Potential tools:
+tree-sitter / AST parsing
+Semgrep
+ESLint
+npm audit
+dependency parsing
+Git CLI
+ripgrep
+custom static-analysis utilities
+AI should interpret and orchestrate deterministic analysis rather than hallucinating repository facts.
+Storage
+For the hackathon prototype:
+SQLite or JSON persistence
+local filesystem for repositories
+optional graph representation using JSON
+Do NOT introduce unnecessary infrastructure.
+2. High-Level Architecture
+                    ┌─────────────────────┐
+                    │     React UI        │
+                    └──────────┬──────────┘
+                               │
+                         REST / WebSocket
+                               │
+                    ┌──────────▼──────────┐
+                    │     FastAPI         │
+                    │    API Gateway      │
+                    └──────────┬──────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              │                │                │
+              ▼                ▼                ▼
+       Repository        Knowledge         Mission
+        Analyzer           Graph            Engine
+              │                │                │
+              ▼                ▼                ▼
+       Static Analysis    Business Rules    Agent Team
+       Dependency         Relationships     Migration
+       Security           Evidence          Verification
+              │                │                │
+              └────────────────┼────────────────┘
+                               ▼
+                         AI / LLM Layer
+3. Repository Analyzer
+The analyzer should produce structured data.
+Example:
+{
+  "repository": {
+    "name": "legacy-shop",
+    "language": "javascript",
+    "runtime": "node12"
+  },
+  "files": [],
+  "modules": [],
+  "dependencies": [],
+  "apis": [],
+  "database_operations": [],
+  "business_rules": [],
+  "security_findings": [],
+  "tests": []
+}
+4. Knowledge Graph Schema
+Each node:
+{
+  "id": "payment-service",
+  "type": "service",
+  "name": "PaymentService",
+  "file": "src/services/payment.js",
+  "line": 12,
+  "description": "Processes customer payments",
+  "confidence": 0.96
+}
+Edges:
+{
+  "source": "checkout-controller",
+  "target": "payment-service",
+  "relationship": "CALLS"
+}
+Possible node types:
+repository
+directory
+file
+function
+class
+service
+api
+database
+table
+dependency
+test
+business_rule
+security_finding
+external_service
+configuration
+Possible relationships:
+CONTAINS
+IMPORTS
+CALLS
+DEPENDS_ON
+READS
+WRITES
+EXPOSES
+TESTS
+USES
+TRIGGERS
+IMPLEMENTS
+AFFECTS
+5. Business Rule Extraction
+Rules should have this structure:
+{
+  "id": "rule-001",
+  "title": "Senior Customer Discount",
+  "description": "Customers aged 60+ receive a 15% discount when order total exceeds $500.",
+  "source_file": "src/services/pricing.js",
+  "source_lines": "42-47",
+  "confidence": 0.94,
+  "status": "discovered"
+}
+Statuses:
+discovered
+confirmed
+rejected
+needs_review
+6. Change Impact Engine
+The system should use graph traversal.
+Given:
+target = PaymentService
+Traverse:
+direct callers
+transitive callers
+dependencies
+database operations
+APIs
+tests
+business rules
+external integrations
+Produce:
+{
+  "target": "PaymentService",
+  "direct_impact": [],
+  "indirect_impact": [],
+  "business_rules": [],
+  "tests": [],
+  "security": [],
+  "external_integrations": [],
+  "recommendations": []
+}
+The UI should visualize the result.
+7. Risk Explanation
+Do not show an arbitrary AI-generated number as the primary result.
+Instead explain:
+Impact Areas
+Architecture
+Dependencies
+APIs
+Data
+Business Rules
+Security
+Tests
+Example:
+Impact: HIGH
+Reason:
+PaymentService is directly used by 4 modules and
+participates in 3 business rules.
+The component also writes payment status
+to the orders collection.
+Recommended approach:
+Introduce an adapter layer before replacement.
+8. Ask Why
+The user can select any graph node and ask:
+Why does this exist?
+The system should search:
+source code
+imports
+callers
+comments
+configuration
+tests
+Git history where available
+Response format:
+Why does PaymentService use LegacyGateway?
+Evidence
+1. src/payment.js:18
+   LegacyGateway is imported.
+2. src/payment.js:45
+   PaymentService calls LegacyGateway.charge().
+3. tests/payment.test.js:22
+   Expected gateway response format is asserted.
+Conclusion
+The dependency appears to be required by the
+current payment flow.
+Confidence: High
+If there is no evidence:
+I could not find sufficient evidence to determine why
+this dependency exists.
+9. Mission Engine
+Mission object:
+{
+  "id": "mission-001",
+  "goal": "Modernize payment infrastructure",
+  "status": "planning",
+  "phases": [
+    {
+      "id": 1,
+      "name": "Repository Analysis",
+      "status": "completed"
+    },
+    {
+      "id": 2,
+      "name": "Business Rule Recovery",
+      "status": "completed"
+    },
+    {
+      "id": 3,
+      "name": "Impact Analysis",
+      "status": "completed"
+    },
+    {
+      "id": 4,
+      "name": "Migration",
+      "status": "pending"
+    },
+    {
+      "id": 5,
+      "name": "Verification",
+      "status": "pending"
+    }
+  ]
+}
+10. Human Approval UI
+Example:
+┌──────────────────────────────────────────────┐
+│ HUMAN DECISION REQUIRED                      │
+├──────────────────────────────────────────────┤
+│                                              │
+│ ReForge discovered an undocumented behavior. │
+│                                              │
+│ Payment retries occur up to 3 times.         │
+│                                              │
+│ Evidence:                                    │
+│ payment.js:91-103                            │
+│                                              │
+│ What should happen during modernization?     │
+│                                              │
+│ [ Preserve ] [ Remove ] [ Investigate ]      │
+└──────────────────────────────────────────────┘
+11. Main UI
+The application should feel like a serious developer tool.
+Layout
+┌─────────────────────────────────────────────────────────┐
+│ ReForge                          Mission: Active ●       │
+├────────────┬────────────────────────────────────────────┤
+│            │                                            │
+│ Overview   │                                            │
+│            │              Main Workspace                │
+│ Knowledge  │                                            │
+│ Graph      │                                            │
+│            │                                            │
+│ Business   │                                            │
+│ Rules      │                                            │
+│            │                                            │
+│ Impact     │                                            │
+│ Simulator  │                                            │
+│            │                                            │
+│ Missions   │                                            │
+│            │                                            │
+│ Verification                                            │
+│            │                                            │
+│ Reports    │                                            │
+│            │                                            │
+└────────────┴────────────────────────────────────────────┘
+12. Dashboard
+Display:
+Repository Health
+Files analyzed
+Dependencies
+Business rules discovered
+Security findings
+Tests detected
+Components analyzed
+Modernization Progress
+Analysis              ✓
+Knowledge Recovery    ✓
+Impact Simulation     ✓
+Migration             60%
+Verification          Pending
+13. Knowledge Graph Page
+Use React Flow.
+Nodes should be visually distinct by type.
+Clicking a node opens:
+PaymentService
+Type:
+Service
+File:
+src/services/payment.js
+Responsibilities:
+Payment processing
+Dependencies:
+LegacyGateway
+OrdersRepository
+Business Rules:
+3
+Tests:
+7
+Security Findings:
+1
+14. Business Rules Page
+Cards:
+Senior Customer Discount
+15% discount for customers aged 60+
+when order exceeds $500.
+Source:
+pricing.js:42-47
+Confidence:
+94%
+[Confirm] [Reject] [Investigate]
+15. Impact Simulator
+Top section:
+WHAT HAPPENS IF I CHANGE...
+[ PaymentService                  ▼ ]
+[ Analyze Impact ]
+Then:
+DIRECT IMPACT
+4 components
+INDIRECT IMPACT
+7 components
+BUSINESS RULES
+3
+TESTS
+9
+SECURITY
+2 findings
+RECOMMENDATION
+Introduce PaymentAdapter before replacement.
+Below it, render the dependency/impact graph.
+16. Code Explorer
+Use Monaco Editor.
+Features:
+syntax highlighting
+file tree
+source line references
+highlighted evidence
+side-by-side legacy/new code
+17. Modernization View
+Show:
+LEGACY                         MODERNIZED
+Node.js 12                     Node.js 22
+old dependency                updated dependency
+legacy API                    current API
+missing tests                 generated tests
+undocumented rules             recovered rules
+18. Verification Page
+Display:
+Verification Results
+Behavioral Contracts
+12 / 12 passed
+Regression Tests
+27 / 29 passed
+Security Checks
+18 / 18 passed
+Dependency Audit
+Completed
+Remaining Issues
+2
+Never fabricate results.
+If a test has not actually run, display:
+Not executed.
+19. Demo Repository
+Create a deliberately designed repository named:
+legacy-shop
+Suggested structure:
+legacy-shop/
+├── package.json
+├── app.js
+├── config/
+│   └── database.js
+├── routes/
+│   ├── checkout.js
+│   └── users.js
+├── services/
+│   ├── payment.js
+│   ├── pricing.js
+│   ├── orders.js
+│   └── user.js
+├── repositories/
+│   └── orderRepository.js
+├── integrations/
+│   └── legacyGateway.js
+├── middleware/
+│   └── auth.js
+└── tests/
+    ├── payment.test.js
+    └── pricing.test.js
+The repository should contain intentionally discoverable relationships.
+20. Demo Story
+The demo should follow one narrative.
+Step 1
+Open:
+legacy-shop
+ReForge analyzes it.
+Step 2
+Show:
+"I inherited this application and don't understand it."
+ReForge produces the Knowledge Graph.
+Step 3
+Open Business Rules.
+Show the recovered discount/payment rules.
+Step 4
+Select:
+PaymentService
+Ask:
+What happens if I replace this?
+Show impact graph.
+Step 5
+Ask:
+Why does it depend on LegacyGateway?
+Show evidence.
+Step 6
+Create mission:
+Modernize the payment layer.
+Step 7
+Human approval gate.
+Step 8
+Apply controlled migration.
+Step 9
+Run verification.
+Step 10
+Show final report.
+21. Acceptance Criteria
+The prototype is considered successful only if:
+Repository
+Demo repository loads successfully.
+Repository files can be inspected.
+Analysis produces real results.
+Knowledge
+Dependencies are extracted.
+Business rules are extracted.
+Source evidence is displayed.
+Confidence is displayed.
+Architecture graph works.
+Simulation
+User can select a component.
+User can run impact analysis.
+Affected components are identified.
+Business rules are connected.
+Tests are connected.
+Recommendations are generated.
+AI
+User can ask questions.
+AI answers using repository context.
+Answers cite evidence.
+AI does not invent unavailable information.
+Modernization
+Mission can be created.
+Mission has phases.
+Human approval is required for important changes.
+Changes can be inspected.
+Verification
+Tests can run.
+Results are real.
+Behavioral contracts are shown.
+Before/after state is visible.
+UX
+UI looks production-quality.
+No broken buttons.
+No placeholder lorem ipsum.
+No fake metrics presented as real.
+Loading/error states exist.
+Empty states exist.
+22. Hackathon Demo Principle
+Do not try to demonstrate every feature.
+The strongest sequence is:
+UNDERSTAND
+     ↓
+WHY?
+     ↓
+WHAT IF I CHANGE THIS?
+     ↓
+RECOVER
+     ↓
+VERIFY
+That single story should make the product understandable within seconds.

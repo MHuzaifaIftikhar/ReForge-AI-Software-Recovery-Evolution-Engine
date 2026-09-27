@@ -1,0 +1,460 @@
+ReForge
+AI Software Recovery & Evolution Engine
+Hackathon Product Requirements Document
+Version: 1.0Project: IBM Bob 2.0 HackathonProduct: ReForgeCategory: AI-powered software maintenance, legacy modernization, developer productivity
+1. Executive Summary
+ReForge is an AI-powered software recovery and evolution engine designed to help developers understand, maintain, and safely modernize legacy software.
+Traditional AI code modernization tools focus primarily on:
+"Take this old code and rewrite it using newer technology."
+ReForge addresses a deeper problem:
+Companies don't just have legacy code. They have legacy knowledge trapped inside that code.
+When developers inherit an old system, they often do not know:
+why certain code exists
+which components depend on it
+what undocumented business rules are hidden inside it
+what will break if they modify it
+which dependencies are actually safe to remove
+which behavior must be preserved
+why previous developers made unusual architectural decisions
+ReForge reconstructs this hidden knowledge and turns it into an interactive software intelligence layer.
+It provides four major capabilities:
+Understand — reconstruct the architecture, dependencies, business rules and behavior of a legacy codebase.
+Simulate — determine what could be affected by a proposed change.
+Recover — create and execute a controlled modernization mission.
+Verify — prove that important existing behavior has not been unintentionally broken.
+2. Core Value Proposition
+One-line pitch
+ReForge helps developers take ownership of software nobody understands by reconstructing its architecture and business knowledge, simulating change impact, safely modernizing it, and verifying that behavior still works.
+Short pitch
+ReForge doesn't just modernize legacy code. It recovers the knowledge trapped inside it.
+3. Problem
+Legacy software creates a significant maintenance burden.
+A developer joining an old project may face:
+outdated dependencies
+undocumented architecture
+missing tests
+hidden business rules
+tightly coupled modules
+security weaknesses
+obsolete APIs
+confusing naming
+dead code
+undocumented external integrations
+database dependencies
+years of accumulated technical debt
+The dangerous part is that simply changing old code can introduce regressions.
+A developer may think:
+"This function isn't used anywhere. I can delete it."
+But it may actually be:
+dynamically imported
+referenced by a configuration file
+triggered by a webhook
+required by a scheduled job
+depended upon by an external service
+implementing an undocumented business rule.
+Therefore, modernization requires understanding before changing.
+4. Target Users
+Primary User
+Software Developer / Software Engineer
+A developer who inherits or maintains an unfamiliar legacy codebase.
+Typical situation:
+"I need to modify this old payment system, but I don't understand how the pieces connect or what will break."
+Secondary Users
+Software architects
+Engineering leads
+DevOps engineers
+Security engineers
+Technical consultants
+Developers performing migrations
+Teams taking ownership of acquired software
+5. Product Goals
+ReForge should allow a developer to:
+Goal 1 — Understand
+Upload/open a legacy repository and automatically generate:
+architecture
+dependency relationships
+API relationships
+database relationships
+business rules
+security findings
+technical debt
+important components
+tests
+external integrations
+Goal 2 — Ask Questions
+Allow developers to ask questions such as:
+"What does this application actually do?"
+"Why does PaymentService call LegacyGateway?"
+"What business rules are implemented here?"
+"Why is this dependency still required?"
+"What happens if I remove this package?"
+Goal 3 — Simulate Changes
+The developer should be able to select a component and ask:
+"What happens if I change this?"
+ReForge should identify:
+affected files
+affected modules
+affected APIs
+affected database operations
+affected tests
+affected business rules
+security implications
+external integrations
+likely regression areas
+recommended migration strategy
+Goal 4 — Modernize Safely
+ReForge should create a structured modernization mission.
+Example:
+"Migrate this project from Node.js 12 to Node.js 22 and replace deprecated dependencies."
+The system should produce:
+analysis
+migration plan
+affected components
+required changes
+tests required
+human approval gates
+implementation
+verification
+Goal 5 — Verify
+After modernization, ReForge should compare old and new behavior using:
+tests
+generated tests
+behavioral contracts
+static analysis
+API comparisons
+dependency checks
+regression analysis
+6. Core Product Concepts
+6.1 Software Knowledge Graph
+The Knowledge Graph is the central intelligence layer.
+It represents relationships such as:
+Application
+ ├── Service
+ │    ├── Function
+ │    │    ├── Database Query
+ │    │    ├── API Call
+ │    │    └── Business Rule
+ │    │
+ │    └── Dependency
+ │
+ ├── Database
+ │
+ ├── External API
+ │
+ ├── Security Boundary
+ │
+ └── Test
+Each node should contain evidence from the repository.
+Example:
+{
+  "type": "business_rule",
+  "description": "Senior customers receive a 15% discount for orders above $500",
+  "source": "src/services/pricing.js:42-47",
+  "confidence": 0.94
+}
+The system must distinguish:
+confirmed facts
+inferred relationships
+uncertain findings
+7. Business Rule Discovery
+This is one of ReForge's primary differentiators.
+The system scans code for logic that appears to represent business behavior.
+Example:
+if (customer.age >= 60 && order.total > 500) {
+    discount = 0.15;
+}
+ReForge converts this into:
+Potential Business Rule
+Senior customer discount
+Customers aged 60 or above receive a 15% discount when their order exceeds $500.
+Source: pricing.js:42-44
+Confidence: High
+Evidence: Conditional business logic
+The developer can then:
+accept
+reject
+investigate
+add a note
+Accepted rules become part of the project's institutional memory.
+8. Change Impact Simulation
+This is the primary "wow" feature.
+The developer selects:
+PaymentService
+and asks:
+What happens if I replace PaymentService?
+ReForge traces the dependency graph.
+Example:
+PaymentService
+      │
+      ├── CheckoutController
+      │
+      ├── OrderService
+      │
+      ├── RefundService
+      │
+      ├── PaymentWebhook
+      │
+      ├── PaymentDatabase
+      │
+      ├── Payment Tests
+      │
+      └── Business Rules
+The system produces:
+Change Impact
+Directly affected
+PaymentService
+CheckoutController
+RefundService
+Indirectly affected
+OrderService
+Payment webhook
+Payment database records
+Business rules affected
+Payment retry policy
+Refund eligibility
+Failed-payment order handling
+Tests affected
+checkout tests
+refund tests
+payment integration tests
+Security considerations
+payment credential handling
+webhook authentication
+Recommended action
+Introduce a payment adapter before replacing the provider.
+9. Software Archaeology
+ReForge should attempt to answer:
+"Why is this weird code here?"
+Where repository history is available, inspect:
+commits
+commit messages
+file history
+changes surrounding the component
+dependency history
+Example result:
+This workaround was introduced when the payment provider changed its response format.
+The answer must include evidence.
+If evidence is unavailable, ReForge must explicitly say:
+"No historical evidence found."
+It must never invent a historical explanation.
+10. Behavioral Contracts
+When a project has poor tests, ReForge should derive behavioral expectations from existing code.
+Example:
+Behavioral Contract
+Input:
+customer.age >= 60
+order.total > 500
+Expected:
+discount = 15%
+These contracts can later be used to compare legacy and modernized behavior.
+11. Recovery Mission
+Instead of allowing the user to perform random modernization actions, ReForge creates a structured mission.
+Example:
+Mission
+Modernize payment infrastructure
+Phase 1
+Analyze architecture.
+Phase 2
+Identify dependencies.
+Phase 3
+Recover payment-related business rules.
+Phase 4
+Identify affected components.
+Phase 5
+Create migration strategy.
+Phase 6
+Request human approval.
+Phase 7
+Apply changes.
+Phase 8
+Generate/run verification tests.
+Phase 9
+Produce final report.
+12. Human Decision Gates
+AI must not silently make high-impact assumptions.
+When uncertainty exists:
+⚠ Human Decision Required
+ReForge found behavior that appears intentional but is not documented.
+Detected:
+Legacy payment retry mechanism
+Evidence:
+payment.js:91-103
+What should happen?
+[ Preserve behavior ]
+[ Remove behavior ]
+[ Investigate ]
+The user's decision becomes part of the project's institutional memory.
+13. Agent Team
+ReForge should use a multi-agent architecture.
+Commander Agent
+Responsible for:
+mission planning
+coordinating agents
+summarizing results
+determining dependencies between tasks
+Archaeologist Agent
+Responsible for:
+repository exploration
+architecture reconstruction
+code history
+hidden dependencies
+technical context
+Business Analyst Agent
+Responsible for:
+business rule discovery
+behavioral contracts
+domain logic extraction
+Security Agent
+Responsible for:
+security vulnerabilities
+authentication issues
+secrets
+insecure dependencies
+dangerous patterns
+Dependency Agent
+Responsible for:
+outdated packages
+deprecated APIs
+dependency relationships
+migration compatibility
+Migration Agent
+Responsible for:
+modernization plan
+code changes
+API migration
+dependency replacement
+QA Agent
+Responsible for:
+test generation
+test execution
+regression analysis
+Documentation Agent
+Responsible for:
+architecture documentation
+business rules
+decision records
+final reports
+14. MVP
+The MVP must focus on one controlled legacy stack.
+Recommended demo stack
+Node.js 12
+Express
+MongoDB
+npm
+JavaScript
+The demo repository should intentionally contain:
+outdated dependencies
+deprecated APIs
+weak authentication
+undocumented business rules
+missing tests
+tightly coupled services
+a payment module
+database interactions
+external API interaction
+This makes the demonstration deterministic.
+15. MVP Features
+Must Have
+A. Repository Import
+upload ZIP
+or load demo repository
+extract files
+display repository structure
+B. Repository Analysis
+Generate:
+architecture
+dependencies
+business rules
+security findings
+API relationships
+C. Knowledge Graph
+Interactive graph showing:
+files
+functions
+services
+dependencies
+APIs
+database
+tests
+business rules
+D. Change Simulation
+Select a component.
+Ask:
+What happens if I change this?
+Display impact graph.
+E. Ask Why
+Allow:
+Why is this dependency required?
+The response must cite repository evidence.
+F. Modernization Mission
+Generate a multi-step migration plan.
+G. Human Approval
+Require approval before high-impact changes.
+H. Verification
+Generate/run tests and compare behavior.
+I. Final Report
+Show:
+findings
+changes
+business rules recovered
+tests
+security improvements
+remaining risks
+documentation
+16. Stretch Features
+Only implement these if the MVP is stable:
+Git history analysis
+rollback/checkpoints
+live documentation
+decision records
+dead-code detection
+dependency replacement suggestions
+architecture diff
+before/after comparison
+downloadable modernization report
+17. Non-Goals
+Do NOT attempt to support:
+every programming language
+every framework
+every database
+autonomous production deployment
+real enterprise repositories
+arbitrary cloud infrastructure
+fully autonomous destructive changes
+The hackathon prototype should demonstrate depth rather than breadth.
+18. Success Criteria
+A successful prototype should demonstrate this complete workflow:
+Legacy Repository
+       ↓
+Understand
+       ↓
+Knowledge Graph
+       ↓
+Business Rules
+       ↓
+"Why?"
+       ↓
+"What happens if I change this?"
+       ↓
+Impact Analysis
+       ↓
+Modernization Mission
+       ↓
+Human Approval
+       ↓
+Code Changes
+       ↓
+Verification
+       ↓
+Before / After Report
+19. Product Principle
+ReForge must never pretend to know something it cannot prove.
+Every important AI-generated finding should contain:
+evidence
+source file
+line number when available
+confidence
+explanation
+This is critical for developer trust.
+20. Final Product Statement
+ReForge doesn't just modernize legacy code. It recovers the knowledge trapped inside it.

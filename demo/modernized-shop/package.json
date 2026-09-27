@@ -1,0 +1,21 @@
+{
+  "name": "modernized-shop",
+  "version": "2.0.0",
+  "description": "Modernized e-commerce application on Node 22 with PaymentAdapter and isolated business rules",
+  "main": "app.js",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "node tests/run-all.js"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "mongodb": "^6.10.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "mocha": "^10.7.3"
+  }
+}

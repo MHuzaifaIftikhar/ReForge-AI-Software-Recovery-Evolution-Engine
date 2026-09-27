@@ -1,0 +1,23 @@
+{
+  "name": "legacy-shop",
+  "version": "1.0.0",
+  "description": "Legacy e-commerce store with outdated dependencies and undocumented rules",
+  "main": "app.js",
+  "engines": {
+    "node": ">=12.0.0 <13.0.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "node tests/run-all.js"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "body-parser": "^1.18.3",
+    "mongodb": "^3.6.3",
+    "request": "^2.88.2",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.2"
+  }
+}

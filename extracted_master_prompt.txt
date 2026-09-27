@@ -1,0 +1,878 @@
+MASTER BUILD PROMPT — REFORGE
+You are the lead engineer, product architect, AI engineer, UX engineer, and QA engineer responsible for building the complete working prototype described below.
+Your task is to build ReForge — AI Software Recovery & Evolution Engine as a polished, functional hackathon-grade product.
+This is NOT a UI mockup.
+This is NOT a landing page.
+This is NOT a collection of fake dashboards.
+Build a functioning end-to-end prototype where the major workflows actually work against a real demo legacy repository.
+1. PRODUCT
+Product name:
+ReForge
+Tagline:
+AI Software Recovery & Evolution Engine
+Core statement:
+ReForge helps developers take ownership of software nobody understands by reconstructing its architecture and business knowledge, simulating change impact, safely modernizing it, and verifying that behavior still works.
+Core philosophy:
+ReForge doesn't just modernize legacy code. It recovers the knowledge trapped inside it.
+2. PRIMARY OBJECTIVE
+Build a complete vertical slice demonstrating:
+Legacy Repository
+        ↓
+Repository Analysis
+        ↓
+Software Knowledge Graph
+        ↓
+Business Rule Discovery
+        ↓
+Ask Why
+        ↓
+Change Impact Simulation
+        ↓
+Modernization Mission
+        ↓
+Human Decision Gate
+        ↓
+Controlled Code Modification
+        ↓
+Verification
+        ↓
+Before / After Report
+Every important step should be functional.
+Do not build fake metrics.
+Do not hardcode the entire UI response to look intelligent.
+Use real repository analysis wherever practical.
+3. IMPLEMENTATION PRIORITY
+Prioritize in this exact order:
+Priority 1
+Working repository analyzer.
+Priority 2
+Knowledge graph.
+Priority 3
+Business rule extraction.
+Priority 4
+Change impact simulation.
+Priority 5
+AI "Ask Why" interface.
+Priority 6
+Modernization mission.
+Priority 7
+Human approval.
+Priority 8
+Verification.
+Priority 9
+Polish and animations.
+If time becomes limited, reduce visual complexity rather than sacrificing these core workflows.
+4. TECH STACK
+Use:
+Frontend
+React + TypeScript + Vite
+Tailwind CSS
+shadcn/ui
+React Flow
+Monaco Editor
+Lucide icons
+Recharts only where useful
+Backend
+Python
+FastAPI
+Pydantic
+Uvicorn
+Analysis
+Use deterministic analysis whenever possible:
+AST parsing
+tree-sitter if useful
+npm/package parsing
+dependency graph analysis
+Semgrep if available
+ESLint where useful
+npm audit where available
+Git CLI
+ripgrep
+Use AI for:
+interpretation
+explanation
+business-rule summarization
+migration planning
+natural-language questions
+agent coordination
+Do not ask an LLM to guess basic facts that can be extracted deterministically.
+5. PROJECT STRUCTURE
+Create a clean monorepo:
+reforge/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── layouts/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   ├── types/
+│   │   └── lib/
+│   └── package.json
+│
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── analyzers/
+│   │   ├── agents/
+│   │   ├── graph/
+│   │   ├── missions/
+│   │   ├── verification/
+│   │   ├── models/
+│   │   ├── services/
+│   │   └── main.py
+│   └── requirements.txt
+│
+├── demo/
+│   └── legacy-shop/
+│
+├── data/
+│
+├── docs/
+│
+├── scripts/
+│
+├── README.md
+└── docker-compose.yml
+Keep architecture modular.
+6. FIRST BUILD THE DEMO REPOSITORY
+Before building the UI, create:
+demo/legacy-shop
+This is the controlled legacy application used to demonstrate ReForge.
+It should be a small but realistic Node.js/Express e-commerce application.
+Use intentionally old-style patterns.
+Include:
+app.js
+routes/
+services/
+repositories/
+middleware/
+integrations/
+config/
+tests/
+Include:
+authentication
+users
+products
+checkout
+orders
+payments
+pricing
+MongoDB-style repository logic
+external payment gateway
+tests
+Include intentionally:
+outdated dependency versions
+deprecated patterns
+weak documentation
+missing tests
+tightly coupled components
+an undocumented discount rule
+payment retry logic
+legacy payment gateway
+database relationships
+API relationships
+Do NOT create vulnerabilities that could cause real-world harm.
+Use safe demonstration-only security findings.
+7. MAKE THE DEMO REPOSITORY ANALYZABLE
+The repository must contain enough structure for the analyzer to discover meaningful relationships.
+For example:
+if (customer.age >= 60 && order.total > 500) {
+    discount = 0.15;
+}
+This should be discovered as:
+Potential Business Rule
+Senior Customer Discount
+Customers aged 60+ receive 15% discount
+when order total exceeds $500.
+Evidence:
+services/pricing.js:42-44
+Confidence:
+High
+Also include payment behavior such as:
+Payment
+ ↓
+LegacyGateway
+ ↓
+Retry
+ ↓
+Order status update
+so the impact simulator has meaningful relationships.
+8. REPOSITORY ANALYZER
+Implement an actual analyzer.
+At minimum extract:
+Files
+path
+extension
+size
+language
+Modules
+imports
+exports
+Functions
+name
+file
+line
+callers where detectable
+dependencies
+Dependencies
+Read package.json.
+Extract:
+package
+version
+direct/development dependency
+usage where detectable
+APIs
+Detect:
+Express routes
+HTTP methods
+route paths
+Database
+Detect common database operations.
+Tests
+Detect test files and test names.
+Security
+Detect safe demonstration patterns such as:
+weak password hashing
+missing authentication middleware
+insecure dependency
+hardcoded non-secret demo configuration
+Do not invent findings.
+9. KNOWLEDGE GRAPH
+Build a graph from actual analysis results.
+Node types:
+repository
+directory
+file
+function
+service
+api
+database
+dependency
+test
+business_rule
+security_finding
+external_service
+Relationships:
+CONTAINS
+IMPORTS
+CALLS
+DEPENDS_ON
+READS
+WRITES
+EXPOSES
+TESTS
+USES
+TRIGGERS
+AFFECTS
+Expose graph data through the backend.
+Render using React Flow.
+Clicking a node must display evidence.
+10. BUSINESS RULE ENGINE
+Implement rule discovery.
+Start with deterministic patterns for JavaScript.
+Identify conditional logic involving domain concepts.
+Then optionally use the AI layer to summarize the rule.
+Every business rule must include:
+{
+  "title": "...",
+  "description": "...",
+  "source_file": "...",
+  "source_lines": "...",
+  "confidence": 0.0,
+  "status": "discovered"
+}
+Never invent a source location.
+11. ASK WHY
+Implement an interactive assistant.
+User selects:
+PaymentService
+and asks:
+Why does this depend on LegacyGateway?
+The backend should gather relevant repository context.
+The AI should answer based on that context.
+The answer must include:
+Explanation
+Evidence
+Source
+Confidence
+Example:
+PaymentService depends on LegacyGateway because
+the checkout flow calls LegacyGateway.charge()
+before updating the order payment status.
+Evidence:
+src/services/payment.js:18
+src/services/payment.js:45
+The payment tests also expect the gateway's
+legacy response format.
+Confidence: High
+If evidence is insufficient:
+I could not find enough evidence to determine why this dependency exists.
+Never hallucinate.
+12. CHANGE IMPACT SIMULATOR
+This is one of the most important features.
+UI:
+What happens if I change...
+[ PaymentService ]
+[ Analyze Impact ]
+The backend should traverse the knowledge graph.
+Find:
+direct callers
+indirect callers
+dependencies
+APIs
+database interactions
+business rules
+tests
+external services
+security findings
+Return structured results.
+Example:
+Direct Impact
+CheckoutController
+RefundService
+Indirect Impact
+OrderService
+Business Rules
+Payment retry policy
+Refund eligibility
+Tests
+payment.test.js
+checkout.test.js
+External Systems
+LegacyGateway
+Recommendation
+Introduce a payment adapter before replacement.
+Render the impact graph.
+13. IMPACT EXPLANATION
+Do not rely on an arbitrary "risk score."
+Instead explain why the impact is significant.
+Example:
+Impact: HIGH
+Why?
+• 4 modules call PaymentService
+• 3 business rules depend on payment status
+• 2 tests validate its current response format
+• PaymentService writes order payment state
+• LegacyGateway is an external integration
+Recommended migration:
+Introduce PaymentAdapter and migrate callers
+incrementally.
+Calculate these values from actual analysis.
+14. MODERNIZATION MISSION
+Create a mission engine.
+User enters:
+Modernize the payment layer.
+Generate:
+Mission: Modernize Payment Layer
+✓ Analyze architecture
+✓ Recover business rules
+✓ Analyze dependencies
+✓ Simulate impact
+→ Create migration plan
+→ Human approval
+→ Apply migration
+→ Verify behavior
+→ Generate report
+Each phase must have:
+status
+progress
+findings
+output
+15. AGENT ARCHITECTURE
+Implement logical agents.
+They may be implemented as service classes/functions rather than separate LLM processes if that is more practical.
+Commander
+Coordinates mission.
+Archaeologist
+Repository analysis.
+Business Analyst
+Business rule discovery.
+Security Agent
+Security analysis.
+Dependency Agent
+Dependency analysis.
+Migration Agent
+Migration planning/code changes.
+QA Agent
+Testing.
+Documentation Agent
+Final documentation.
+Allow independent analysis tasks to run concurrently where practical.
+16. HUMAN DECISION GATE
+Before important changes, stop.
+Show:
+HUMAN DECISION REQUIRED
+ReForge discovered:
+Payment retries occur up to 3 times.
+Evidence:
+services/payment.js:91-103
+This behavior appears intentional but
+is not documented.
+Choose:
+[ Preserve ]
+[ Remove ]
+[ Investigate ]
+The decision should be stored.
+Do not automatically proceed until the user selects an option.
+17. CONTROLLED MODIFICATION
+Do not directly destroy the original repository.
+Create:
+workspace/
+├── original/
+└── modernization/
+or equivalent temporary copies.
+All modifications happen inside the modernization workspace.
+Provide:
+Before
+After
+comparison.
+Use Monaco diff editor where practical.
+18. VERIFICATION
+Implement actual verification.
+Run available tests.
+Generate additional simple behavioral checks where possible.
+Display:
+Verification
+Behavioral Contracts
+12 discovered
+10 passed
+2 require review
+Existing Tests
+27 passed
+2 failed
+Security Checks
+Completed
+Dependency Audit
+Completed
+Numbers must come from actual execution.
+If something cannot be executed:
+Not executed
+Never fabricate success.
+19. BEHAVIORAL CONTRACTS
+Create contracts from discovered business rules.
+Example:
+Contract #04
+Condition:
+Customer age >= 60
+AND
+Order total > 500
+Expected behavior:
+15% discount
+Allow the contract to be run as a verification check.
+20. REPORT
+Create a final report.
+Sections:
+Executive Summary
+Repository Overview
+Architecture
+Recovered Business Rules
+Security Findings
+Dependency Findings
+Change Impact
+Migration Actions
+Human Decisions
+Verification
+Remaining Risks
+Recommended Next Steps
+Provide an in-app report.
+If practical, allow export as JSON/Markdown.
+21. FRONTEND
+Create a polished developer-tool UI.
+Do NOT make it look like a generic SaaS template.
+Visual direction:
+dark developer workspace
+subtle borders
+restrained accent colors
+strong typography
+dense but readable information
+graph visualization
+code editor
+terminal-like output where appropriate
+smooth transitions
+professional developer-tool aesthetic
+Avoid excessive gradients.
+Avoid huge hero sections inside the application.
+22. NAVIGATION
+Sidebar:
+Overview
+Repository
+Knowledge Graph
+Business Rules
+Impact Simulator
+Code Explorer
+Missions
+Verification
+Reports
+23. OVERVIEW
+Show:
+Repository:
+legacy-shop
+Status:
+Analysis Complete
+Files:
+...
+Dependencies:
+...
+Business Rules:
+...
+Security Findings:
+...
+Tests:
+...
+Then show mission progress.
+24. KNOWLEDGE GRAPH SCREEN
+Large graph canvas.
+Right-side inspector.
+Click node → inspector.
+Include:
+Node
+Type
+File
+Lines
+Dependencies
+Callers
+Business Rules
+Tests
+Security
+25. BUSINESS RULE SCREEN
+Use cards.
+Each card:
+Rule title
+Description
+Evidence
+Confidence
+Status
+[Confirm]
+[Reject]
+[Investigate]
+26. IMPACT SCREEN
+Use split layout:
+┌───────────────────────────────────────┐
+│ What happens if I change...           │
+│ [PaymentService] [Analyze]            │
+├───────────────────────┬───────────────┤
+│                       │               │
+│ Impact Graph          │ Findings      │
+│                       │               │
+│                       │ Business      │
+│                       │ Rules         │
+│                       │               │
+│                       │ Tests         │
+└───────────────────────┴───────────────┘
+27. CODE EXPLORER
+Use:
+file tree
+Monaco editor
+source line highlighting
+evidence markers
+Selecting a business rule should jump to the relevant source line.
+28. AI CHAT
+Add a contextual assistant panel.
+Example:
+Ask ReForge
+> Why does this dependency exist?
+> What breaks if I remove this?
+> Explain this business rule.
+> What is the safest migration strategy?
+The assistant should know the currently selected repository/component.
+29. LOADING STATES
+Analysis may take time.
+Display real progress:
+Scanning repository...
+✓ Files discovered
+Building dependency graph...
+✓ 42 relationships
+Extracting business rules...
+✓ 7 candidates
+Running security checks...
+✓ Complete
+Building knowledge graph...
+✓ Complete
+Do not use a fake endless spinner.
+30. ERROR HANDLING
+Every API call needs proper:
+loading state
+error state
+retry
+empty state
+Do not allow the application to silently fail.
+31. DEMO MODE
+Add a clear:
+Load Demo Repository
+button.
+This should load:
+demo/legacy-shop
+and make the entire demo repeatable.
+The judges should not need to upload anything.
+32. DEMO FLOW
+Make sure the following exact sequence works:
+1.
+Click:
+Load Demo Repository
+2.
+Click:
+Analyze Repository
+3.
+Open:
+Knowledge Graph
+4.
+Open:
+Business Rules
+Show the discovered senior customer discount.
+5.
+Select:
+PaymentService
+6.
+Click:
+Analyze Impact
+7.
+Show affected components.
+8.
+Ask:
+Why does PaymentService depend on LegacyGateway?
+9.
+Show evidence.
+10.
+Create:
+Modernize Payment Layer
+11.
+Show mission.
+12.
+Trigger human decision gate.
+13.
+Approve preservation of payment retry behavior.
+14.
+Run modernization.
+15.
+Show before/after code.
+16.
+Run verification.
+17.
+Show final report.
+This flow must work reliably.
+33. AI PROVIDER
+Do not hard-code a provider without checking the available environment.
+Create a clean abstraction:
+class LLMProvider:
+    async def generate(...)
+Support environment variables.
+For example:
+LLM_API_KEY
+LLM_BASE_URL
+LLM_MODEL
+If no API key exists, the application must still function in deterministic demo mode for repository analysis, graph generation, business-rule detection, impact analysis, and mission workflow.
+Do not make the entire application unusable because an LLM key is missing.
+34. SECURITY
+Never expose API keys in frontend code.
+Use environment variables.
+Do not send arbitrary repository contents to external services unless explicitly configured.
+Do not execute arbitrary uploaded code automatically.
+For the hackathon demo, analysis should primarily operate on the controlled demo repository.
+35. DATA INTEGRITY
+Critical rule:
+Never fake intelligence.
+Do not create fake:
+security findings
+test results
+business rules
+dependencies
+impact results
+migration results
+metrics
+All displayed repository facts should originate from:
+repository analysis
+deterministic tooling
+actual execution
+clearly labeled AI inference
+AI inference must be labeled as such.
+36. OBSERVABILITY
+Add backend logging.
+Every major operation should produce useful logs:
+Repository loaded
+Analysis started
+Analysis completed
+Knowledge graph generated
+Business rules discovered
+Impact simulation started
+Mission created
+Verification started
+Verification completed
+37. TESTING
+Before declaring the application complete:
+Backend
+Test:
+repository parsing
+dependency extraction
+graph generation
+business-rule extraction
+impact analysis
+API endpoints
+Frontend
+Test:
+navigation
+loading
+repository loading
+graph
+impact simulator
+mission workflow
+verification
+End-to-end
+Run the entire demo flow.
+Fix all blocking errors.
+38. README
+Create an excellent README.
+Include:
+problem
+solution
+architecture
+features
+setup
+environment variables
+demo instructions
+screenshots placeholders
+technical decisions
+limitations
+future roadmap
+Include the statement:
+ReForge doesn't just modernize legacy code. It recovers the knowledge trapped inside it.
+39. DOCUMENTATION
+Create:
+docs/
+├── PRD.md
+├── ARCHITECTURE.md
+├── AGENTS.md
+├── DEMO.md
+├── API.md
+└── SECURITY.md
+Populate them with the actual implemented architecture.
+Do not create documentation describing features that don't exist.
+40. DEVELOPMENT PROCESS
+Do NOT attempt to write the entire application blindly in one pass.
+Work iteratively.
+Phase 1
+Initialize repository.
+Phase 2
+Build demo legacy application.
+Phase 3
+Build backend repository analyzer.
+Phase 4
+Build knowledge graph.
+Phase 5
+Build frontend shell.
+Phase 6
+Connect graph.
+Phase 7
+Build business-rule extraction.
+Phase 8
+Build impact simulator.
+Phase 9
+Build Ask Why.
+Phase 10
+Build mission engine.
+Phase 11
+Build human approval.
+Phase 12
+Build modernization.
+Phase 13
+Build verification.
+Phase 14
+Polish UI.
+Phase 15
+Run end-to-end demo.
+At the end of each phase, test the functionality before proceeding.
+41. IMPORTANT ANTI-PATTERNS
+Do NOT:
+create a static mockup
+hardcode the entire dashboard
+fake AI responses
+fabricate test results
+fabricate security metrics
+add meaningless charts
+add dozens of unfinished features
+create unnecessary microservices
+introduce Kubernetes
+introduce complex cloud infrastructure
+require ten different databases
+support ten programming languages
+build authentication unless necessary
+waste time on account management
+create a generic chatbot without repository context
+The product must feel like a focused developer tool.
+42. HACKATHON OPTIMIZATION
+Optimize for:
+Technical execution
+The system actually works.
+Innovation
+Knowledge recovery + change simulation + business-rule discovery.
+Practicality
+A developer can actually use it to understand an unfamiliar codebase.
+Demonstrability
+The entire value proposition can be demonstrated in approximately 3 minutes.
+Feasibility
+The architecture should be understandable and extendable.
+IBM Bob alignment
+IBM Bob should be clearly documented as part of the development workflow for building and orchestrating the project, and the final hackathon submission should include the required Bob IDE task/session evidence.
+Do not claim that ReForge uses IBM Bob as a runtime API unless the actual supported integration exists.
+43. FINAL DEMO NARRATIVE
+The application should make this story visually obvious:
+"I inherited this application."
+↓
+"I don't understand it."
+↓
+"ReForge reconstructs the architecture."
+↓
+"It finds business rules nobody documented."
+↓
+"I want to change PaymentService."
+↓
+"ReForge tells me exactly what could be affected."
+↓
+"I ask why the strange dependency exists."
+↓
+"ReForge shows evidence from the repository."
+↓
+"I create a modernization mission."
+↓
+"ReForge asks me when a human decision is required."
+↓
+"The migration is performed in a controlled workspace."
+↓
+"ReForge verifies the behavior."
+↓
+"Now I understand the software, I know what changed, and I have evidence that important behavior still works."
+Final screen:
+ReForge
+Recover the knowledge.
+Understand the change.
+Modernize with confidence.
+44. FINAL INSTRUCTION
+Start building now.
+First inspect the current workspace and determine what already exists.
+Do not overwrite useful existing work without understanding it.
+If the repository is empty, initialize the project.
+If partial code exists, preserve working components and improve them.
+Build the actual application, not merely documentation.
+After implementation:
+install dependencies
+start backend
+start frontend
+run tests
+load the demo repository
+execute the complete demo workflow
+fix errors
+verify that all core screens work
+verify that the application starts from a clean environment
+update README and documentation
+At the end, provide a concise implementation summary containing:
+what was built
+what works
+how to run it
+environment variables required
+known limitations
+exact demo steps
+any remaining issues
+Do not stop after scaffolding.
+Do not return a plan instead of implementation.
+Build ReForge.

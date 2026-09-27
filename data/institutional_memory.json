@@ -1,0 +1,41 @@
+[
+  {
+    "gate_id": "gate-retry-001",
+    "mission_id": "mission-001",
+    "title": "Undocumented Payment Retry Mechanism",
+    "decision": "preserve",
+    "rationale": "Preserve retry reliability",
+    "timestamp": "2026-09-25T22:45:38Z",
+    "evidence": {
+      "file": "services/payment.js",
+      "lines": "91-103",
+      "snippet": "for (let attempt = 1; attempt <= this.maxRetryAttempts; attempt++) {\n    const retryResponse = await LegacyGateway.charge(...);\n}"
+    }
+  },
+  {
+    "gate_id": "gate-retry-001",
+    "mission_id": "mission-001",
+    "title": "Undocumented Payment Retry Mechanism",
+    "decision": "preserve",
+    "rationale": "Preserve retry logic",
+    "timestamp": "2026-09-25T23:07:43Z",
+    "evidence": {
+      "file": "services/payment.js",
+      "lines": "91-103",
+      "snippet": "for (let attempt = 1; attempt <= this.maxRetryAttempts; attempt++) {\n    const retryResponse = await LegacyGateway.charge(...);\n}"
+    }
+  },
+  {
+    "gate_id": "gate-retry-001",
+    "mission_id": "mission-001",
+    "title": "Undocumented Payment Retry Mechanism",
+    "decision": "preserve",
+    "rationale": "Human approval to keep 3x retry mechanism in modernized adapter",
+    "timestamp": "2026-09-27T14:56:00Z",
+    "evidence": {
+      "file": "services/payment.js",
+      "lines": "91-103",
+      "snippet": "for (let attempt = 1; attempt <= this.maxRetryAttempts; attempt++) {\n    const retryResponse = await LegacyGateway.charge(...);\n}"
+    }
+  }
+]
